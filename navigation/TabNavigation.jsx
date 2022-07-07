@@ -5,7 +5,26 @@ import { Ionicons, MaterialCommunityIcons, Entypo } from "@expo/vector-icons";
 
 import { createStackNavigator } from "@react-navigation/stack";
 import Dash from "../screens/Dash";
+import Login from "../screens/Login";
 
+const Stack = createStackNavigator();
+
+const HomeStack = () =>{
+    return (
+      <Stack.Navigator initialRouteName="Dashboard">
+        <Stack.Screen
+          name="Dashboard"
+          component={Dash}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="LoginScreen"
+          component={Login}
+          options={{ headerShown: false }}
+        />
+      </Stack.Navigator>
+    );
+  }
 
 
 const Tab = createBottomTabNavigator();
@@ -14,7 +33,7 @@ const TabNavigation = ({ route }) => {
   return (
     <Tab.Navigator
       screenOptions={{
-        tabBarActiveTintColor: "#F7941D",
+        tabBarActiveTintColor: "#307A59",
         tabBarInactiveTintColor: "#000000",
         tabBarStyle: {
           borderTopWidth: 0,
@@ -33,41 +52,21 @@ const TabNavigation = ({ route }) => {
           height:60
         },
         headerShown: false,
-        tabBarShowLabel: false,
+        tabBarShowLabel: true,
+        tabBarLabelStyle: {
+            fontSize: 12,
+            fontWeight: "bold",
+            marginTop: 5,
+            marginBottom: 5,
+        }
       }}
     >
       <Tab.Screen
         name="Home"
-        component={Dash}
+        component={HomeStack}
         options={() => ({
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="home-outline" size={size} color={color} />
-          ),
-        })}
-      />
-      <Tab.Screen
-        name="Notifications"
-        component={Dash}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons
-              name="md-notifications-outline"
-              size={size}
-              color={color}
-            />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Scan"
-        component={Dash}
-        options={({ route }) => ({
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons
-              name="credit-card-scan-outline"
-              size={size}
-              color={color}
-            />
           ),
         })}
       />

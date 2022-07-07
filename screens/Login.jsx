@@ -34,26 +34,25 @@ const Login = ({ navigation }) => {
   const [animating, setAnimating] = useState(true);
   const { getAuthState } = useAuth();
 
-  // React.useEffect(() => {
-  //     initialize();
-  // }, []);
+  React.useEffect(() => {
+      initialize();
+  }, []);
 
-  // async function initialize() {
+  async function initialize() {
     
-  //     try {
-  //       console.log("initialize");
-  //         const {user} = await getAuthState();
+      try {
+          const {user} = await getAuthState();
           
-  //         if (user) {
-  //             let currentUser = !!(user.id);
-  //             if (currentUser) navigation.navigate('TabNavigation');
-  //             else navigation.navigate('Login')
+          if (user) {
+              let currentUser = user._id;
+              if (currentUser != null) navigation.navigate('TabNavigation');
+              else navigation.navigate('Login')
 
-  //         } else navigation.navigate('Login');
-  //     } catch (e) {
-  //       navigation.navigate('Login');
-  //     }
-  // }
+          } else navigation.navigate('Login');
+      } catch (e) {
+        navigation.navigate('Login');
+      }
+  }
 
   const [loading, setLoading] = useState(false);
   const [errortext, setErrortext] = useState(null);
@@ -65,12 +64,13 @@ const Login = ({ navigation }) => {
     setLoading(true);
     try {
       const response = await axios.post(
-        "http://192.168.0.188:8000/api/v1/auth/login",
+        "http://192.168.0.150:8000/api/v1/auth/login",
         data
       );
-      console.log(response.data);
-      await handleLogin(response.data);
+      
+     
       if (response.data.success == true) {
+        await handleLogin(response.data);
         navigation.navigate("TabNavigation");
       }
     } catch (err) {

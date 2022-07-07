@@ -22,11 +22,11 @@ function AuthProvider(props) {
       let user = await AsyncStorage.getItem(USER_KEY);
       user = JSON.parse(user);
 
-      if (token !== null && user !== null) await handleLogin({ token, user });
-      else await handleLogout();
-
-      
-      return { token, user };
+      if (token !== null && user !== null){
+        setUserData(user)
+        return { token, user };
+      } 
+      else return { token: null, user: null };
     } catch (error) {
       throw new Error(error);
     }
@@ -35,27 +35,27 @@ function AuthProvider(props) {
   // Handle Login
 
   const handleLogin = async (data) => {
-    console.log("handleLogin");
     try {
       //STORE DATA
       let token = data.token;
       let user = jwt_decode(token);
+      axios.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
+      const user_data = await axios.get("http://192.168.0.150:8000/api/v1/users/"+user._id);
+      if(user_data.data.success == true){
+    //   userData = user_data.data.data;
 
+       
+    setUserData(user_data.data.data);
+      }
       let data_ = [
-        [USER_KEY, JSON.stringify(user)],
+        [USER_KEY, JSON.stringify(user_data.data.data)],
         [TOKEN_KEY, token],
       ];
 
       await AsyncStorage.multiSet(data_);
 
       //AXIOS AUTHORIZATION HEADER
-      axios.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
-      const user_data = await axios.get("http://192.168.0.229:8000/api/v1/users/"+user._id);
-    //   console.log(user_data.data)
-      if(user_data.data.success == true){
-    //   userData = user_data.data.data;
-    setUserData(user_data.data.data);
-      }
+      
     } catch (error) {
         console.log(error)
       throw new Error(error.response);
